@@ -2,7 +2,6 @@ int forwardRight = 12;   //right motor, forward action
 int forwardLeft = 9;    //left motor, forward action
 int backwardRight = 10;   //right motor, backward action
 int backwardLeft = 8;    //left motor, backward action
-char in;                  //variable to store the character received from bluetooth module
 
 const int IrSensorR=A5;   //Ir sensor on right side
 const int IrSensorL=A3;   //Ir sensor on left side
@@ -15,7 +14,7 @@ void setup()
   pinMode(forwardLeft, OUTPUT);
   pinMode(backwardRight, OUTPUT);
   pinMode(backwardLeft, OUTPUT);
-  Serial.begin(9600);   //for establishing communication between arduino and others at 9600 bauds(standard value)
+  Serial.begin(9600);  
 }
 
 void FR()   //function for forward action of the right motor
