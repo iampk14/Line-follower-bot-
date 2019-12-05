@@ -1,41 +1,51 @@
-const int forwardRight = 12;   //right motor, forward action
-const int forwardLeft = 9;    //left motor, forward action
+int forwardRight = 12;   //right motor, forward action
+int forwardLeft = 9;    //left motor, forward action
+int backwardRight = 10;   //right motor, backward action
+int backwardLeft = 8;    //left motor, backward action
 
 const int IrSensorR=A5;   //Ir sensor on right side
 const int IrSensorL=A3;   //Ir sensor on left side
-
-int IrReadingR, IrReadingL ;
+const int IrSensorM=A1;
+int IrReadingR, IrReadingL, IrReadingM, path1[3]; 
 
 void setup()
 {
   pinMode(IrSensorR,INPUT);
   pinMode(IrSensorL,INPUT);
+  pinMode(IrSensorM,INPUT);
   pinMode(forwardRight, OUTPUT);
   pinMode(forwardLeft, OUTPUT);
-  Serial.begin(9600);  
+  pinMode(backwardRight, OUTPUT);
+  pinMode(backwardLeft, OUTPUT);
+  Serial.begin(9600);   //for establishing communication between arduino and others at 9600 bauds(standard value)
 }
 
-void Forward()   //function for forward action
+void Forward()   //function for forward action of the right motor
 {
   digitalWrite(forwardRight, HIGH);
+  digitalWrite(backwardRight, LOW);
   digitalWrite(forwardLeft, HIGH);
+  digitalWrite(backwardLeft, LOW);
 }
+
 
 void right()   //function for right action of the robot
 {
   digitalWrite(forwardLeft, HIGH);
-  digitalWrite(forwardRight, LOW);
+  digitalWrite(backwardRight, LOW);
 }
 
 void left()    //function for left action of the robot
 {
   digitalWrite(forwardRight, HIGH);
-  digitalWrite(forwardLeft, LOW);
+  digitalWrite(backwardLeft, LOW);
 }
 
 void allstop()    //function for stopping the robot
 {
   digitalWrite(forwardRight, LOW);
+  digitalWrite(backwardRight, LOW);
+  digitalWrite(backwardLeft, LOW);
   digitalWrite(forwardLeft, LOW);
 }
 
@@ -43,7 +53,8 @@ void loop()
 {
  IrReadingR=analogRead(IrSensorR);         //Taking values
  IrReadingL=analogRead(IrSensorL);
- if(IrReadingR>=50)                       
+ IrReadingM=analogRead(IrSensorM);
+ if(IrReadingR<=50)                       
   {
     IrReadingR=1;
   }
@@ -51,7 +62,7 @@ void loop()
   {
     IrReadingR=0;
   }
-   if(IrReadingL>=50)
+   if(IrReadingL<=50)
   {
     IrReadingL=1;
   }
@@ -59,15 +70,23 @@ void loop()
   {
     IrReadingL=0;
   }
-  if(IrReadingR==1 && IrReadingL==1)                     //Condition for the bot to move forward 
+ if(IrReadingM<=50)                       
+  {
+    IrReadingM=1;
+  }
+  else
+  {
+    IrReadingM=0;
+  }  
+  if(IrReadingL==0 && IrReadingM==1 && IrReadingR==0)                     //Condition for the bot to move forward 
   {
     Forward();
   }
-  else if(IrReadingR==1 && IrReadingL==0)                //Condition for the bot to move right
+  else if(IrReadingL==0 && IrReadingM==1 && IrReadingR==1)                //Condition for the bot to move right
   {
     right();
   }
-  else if(IrReadingR==0 && IrReadingL==1)                //Condition for the bot to move left
+  else if(IrReadingL==1 && IrReadingM==1 && IrReadingL==0)                //Condition for the bot to move left
   {
     left();
   }
